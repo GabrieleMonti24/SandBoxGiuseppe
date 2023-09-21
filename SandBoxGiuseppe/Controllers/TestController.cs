@@ -18,13 +18,20 @@ namespace SandBoxGiuseppe.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok("Test");
+            //commento
+            return Ok("Test1");
         }
 
         [HttpGet]
         public IActionResult Hello()
         {
             return Ok("Test2");
+        }
+
+        [HttpGet]
+        public IActionResult Hello2()
+        {
+            return Ok("Test3");
         }
 
         [HttpPost]

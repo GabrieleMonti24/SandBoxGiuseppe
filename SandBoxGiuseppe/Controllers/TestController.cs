@@ -19,7 +19,7 @@ namespace SandBoxGiuseppe.Controllers
         public IActionResult Get()
         {
             //commento
-            return Ok("Test1");
+            return Ok("Test2");
         }
 
         [HttpGet]

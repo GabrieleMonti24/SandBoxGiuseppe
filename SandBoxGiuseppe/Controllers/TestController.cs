@@ -18,26 +18,17 @@ namespace SandBoxGiuseppe.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            //commento
-            return Ok("Test4");
-        }
+            try
+            {
+                _logger.LogInformation("Test1");
+                return Ok("Test4");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Test1", ex.Message);
+                throw;
+            }
 
-        [HttpGet]
-        public IActionResult Hello()
-        {
-            return Ok("Test2");
-        }
-
-        [HttpGet]
-        public IActionResult Hello2()
-        {
-            return Ok("Test3");
-        }
-
-        [HttpPost]
-        public IActionResult ciao([FromBody] string value)
-        {
-            return Ok(value);
         }
 
     }

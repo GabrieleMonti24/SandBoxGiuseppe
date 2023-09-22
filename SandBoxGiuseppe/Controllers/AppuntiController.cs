@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SandBoxGiuseppe.Database;
+using SandBoxGiuseppe.Interfaces;
 using SandBoxGiuseppe.Model;
 
 namespace SandBoxGiuseppe.Controllers
@@ -10,20 +11,22 @@ namespace SandBoxGiuseppe.Controllers
     {
 
         private readonly ILogger<AppuntiController> _logger;
+        private readonly IAppuntiService appuntiService;
 
-        public AppuntiController(ILogger<AppuntiController> logger)
+        public AppuntiController(ILogger<AppuntiController> logger, IAppuntiService appuntiService)
         {
             _logger = logger;
+            this.appuntiService = appuntiService;
         }
 
         //aggiungere un appunto
         [HttpPost]
-        public IActionResult PostAppunto([FromBody] Appunti appunto)
+        public IActionResult PostAppunto([FromBody] Appunto appunto)
         {
             try
             {
                 _logger.LogInformation("PostAppunto");
-                AppuntiStoreStatic.appunti.Add(appunto);
+                appuntiService.AggiungiAppunto(appunto);
                 return Ok();
             }
             catch (Exception ex)
@@ -95,11 +98,8 @@ namespace SandBoxGiuseppe.Controllers
         {
             try
             {
-
-                AppuntiStoreStatic.appunti.RemoveAll(x => x.Titolo.Contains(stringa));
+                appuntiService.EliminaAppunto(stringa);
                 return Ok();
-
-
             }
             catch (Exception ex)
             {

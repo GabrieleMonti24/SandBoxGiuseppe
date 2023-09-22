@@ -2,6 +2,7 @@
 {
     public class ToDo
     {
+
         public int Id { get; set; }
         public string Titolo { get; set; }
         public string Descrizione { get; set; }
@@ -17,6 +18,16 @@
 
         //Data completamento
         public DateTime DataCompletamento { get; set; }
+        public ToDo(int id, string titolo, string descrizione, DateTime dataCreazione, DateTime dataScadenza, bool done, DateTime dataCompletamento)
+        {
+            Id = id;
+            Titolo = titolo;
+            Descrizione = descrizione;
+            DataCreazione = dataCreazione;
+            DataScadenza = dataScadenza;
+            Done = done;
+            DataCompletamento = dataCompletamento;
+        }
     }
 
     /*

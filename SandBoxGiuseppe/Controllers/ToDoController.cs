@@ -22,13 +22,14 @@ namespace SandBoxGiuseppe.Controllers
 
         
         [HttpPost]
-        public IActionResult PostTodo([FromBody] ToDo toDo) 
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public IActionResult CreaTodo([FromBody] ToDo toDo) 
         {
             try
             {
                 _logger.LogInformation("PostToDo");
                 toDoService.CreaToDo(toDo);
-                return Ok();
+                return Created("Creato con successo!",toDo);
             }
             catch (Exception ex)
             {
@@ -69,6 +70,7 @@ namespace SandBoxGiuseppe.Controllers
 
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetAll(IToDoService service)
         {
             try
@@ -79,12 +81,13 @@ namespace SandBoxGiuseppe.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("GetToDO", ex.Message);
-                return new BadRequestResult();
+                return NotFound();
             }
         }
 
         
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetToDo([FromQuery]int id)
         {
             try
@@ -97,12 +100,13 @@ namespace SandBoxGiuseppe.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("GetToDoById", ex.Message);
-                return new BadRequestResult();
+                return NotFound();
             }
         }
 
         
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetCompletati()
         {
             try
@@ -115,9 +119,11 @@ namespace SandBoxGiuseppe.Controllers
             catch (Exception)
             {
 
-                throw;
+                return NotFound();
             }
         }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetNonCompletati()
         {
             try
@@ -128,12 +134,13 @@ namespace SandBoxGiuseppe.Controllers
             catch (Exception)
             {
 
-                throw;
+                return NotFound();
             }
         }
 
 
         [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult DeleteToDo([FromQuery] string deleteWith, ToDoService toDoService)
         {
             try
@@ -144,7 +151,7 @@ namespace SandBoxGiuseppe.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("DeleteToDo", ex.Message);
-                return new BadRequestResult();
+                return NotFound();
             }
 
 

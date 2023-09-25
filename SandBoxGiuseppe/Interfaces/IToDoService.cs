@@ -1,3 +1,4 @@
+using SandBoxGiuseppe.Database;
 using SandBoxGiuseppe.Model;
 
 namespace SandBoxGiuseppe.Interfaces
@@ -5,17 +6,21 @@ namespace SandBoxGiuseppe.Interfaces
     public interface IToDoService
     {
 
-        void CreaToDo();
-        void AggiungiToDo();
+        void CreaToDo(ToDo todo);
         
-        void GetToDo();
+        List<ToDo>GetToDo();
         //altri metodi get?
+        ToDo GetToDoById(int id);
+        List<ToDo> GetToDoByCompleto();
+        List<ToDo> GetToDoByNoNCompletato();
+        List<ToDo> GetToDoByScadenza();
 
-        void ModificaToDo();
 
-        void CompleteToDo();
+        ToDo ModificaToDo(ToDo todo, int id);
 
-        void EliminaToDO();
+        ToDo CompletaToDo(ToDo todo);
+
+        void EliminaToDo(string deleteWith);
 
     }
 }

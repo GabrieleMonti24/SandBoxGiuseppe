@@ -6,5 +6,6 @@
         public string Descrizione { get; set; }
         //data creazione
         public DateTime DataCreazione { get; set; }
+        
     }
 }

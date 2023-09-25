@@ -75,7 +75,7 @@
 
 
     Appunti di Giuseppe:
-
+    chidere del metodo findAll
 
      */
 

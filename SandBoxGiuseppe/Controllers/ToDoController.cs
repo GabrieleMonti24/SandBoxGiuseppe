@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using SandBoxGiuseppe.Database;
 using SandBoxGiuseppe.Interfaces;
 using SandBoxGiuseppe.Model;
+using SandBoxGiuseppe.Services;
 
 namespace SandBoxGiuseppe.Controllers
 {
@@ -13,20 +14,50 @@ namespace SandBoxGiuseppe.Controllers
         private readonly ILogger<ToDoController> _logger;
         private readonly IToDoService toDoService;
 
-        public ToDoController(ILogger<ToDoController> logger, IToDoService toDoService)
+        public ToDoController(ILogger<ToDoController> logger, ToDoService toDoService)
         {
             _logger = logger;
             this.toDoService = toDoService;
         }
 
-        //aggiungere un appunto
+        
         [HttpPost]
-        public IActionResult PostAppunto([FromBody] ToDo todo) //da prendere come riferimento
+        public IActionResult PostTodo([FromBody] ToDo toDo) 
         {
             try
             {
                 _logger.LogInformation("PostToDo");
-                toDoService.AggiungiToDo();//da modificare
+                toDoService.CreaToDo(toDo);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PostToDo", ex.Message);
+                return new BadRequestResult();
+            }
+        }
+        [HttpPost]
+        public IActionResult ModificaTodoById([FromBody] ToDo todo, int id)
+        {
+            try
+            {
+                _logger.LogInformation("PostToDoModifica");
+                toDoService.ModificaToDo(todo);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PostToDoModifica", ex.Message);
+                return new BadRequestResult();
+            }
+        }
+        [HttpPost]
+        public IActionResult CompletaTodo([FromBody] ToDo todo)
+        {
+            try
+            {
+                _logger.LogInformation("PostToDo");
+                toDoService.CompletaToDo(todo);
                 return Ok();
             }
             catch (Exception ex)
@@ -36,53 +67,60 @@ namespace SandBoxGiuseppe.Controllers
             }
         }
 
-        //Ottieni tutti gli appunti
+
         [HttpGet]
-        public IActionResult GetAppunti()
+        public IActionResult GetAll(IToDoService service)
         {
             try
             {
-                _logger.LogInformation("GetAppunti");
-                return Ok(AppuntiStoreStatic.appunti);
+                _logger.LogInformation("GetTodo");
+                return Ok(service.GetToDo());
             }
             catch (Exception ex)
             {
-                _logger.LogError("GetAppunti", ex.Message);
+                _logger.LogError("GetToDO", ex.Message);
                 return new BadRequestResult();
             }
         }
 
-        //Ottieni un appunto per titolo
+        
         [HttpGet]
-        public IActionResult GetAppunto([FromQuery] string stringa)
+        public IActionResult GetToDo([FromQuery]int id)
         {
             try
             {
-                _logger.LogInformation("GetAppunto");
-                var appunto = AppuntiStoreStatic.appunti.Where(x => x.Titolo.Contains(stringa)).ToList();
-                return Ok(appunto);
+                _logger.LogInformation("GetToDo");
+                
+                return Ok(toDoService.GetToDoById(id));
 
             }
             catch (Exception ex)
             {
-                _logger.LogError("GetAppunto", ex.Message);
+                _logger.LogError("GetToDoById", ex.Message);
                 return new BadRequestResult();
             }
         }
 
-        //Ottieni tutti gli appunti semplificati
+        
         [HttpGet]
-        public IActionResult GetAppuntiSemplice()
+        public IActionResult GetCompletati()
         {
             try
             {
-                List<AppuntiSemplice> appuntiSemplici = new();
+                return toDoService.GetToDoByCompleto();
 
-                appuntiSemplici = AppuntiStoreStatic.appunti
-                    .Select(x => new AppuntiSemplice { Titolo = "Titolo - " + x.Titolo })
-                    .ToList();
+            }
+            catch (Exception)
+            {
 
-                return Ok(appuntiSemplici);
+                throw;
+            }
+        }
+        public IActionResult GetNonCompletati()
+        {
+            try
+            {
+                return toDoService.GetToDoByNoNCompletato();
 
             }
             catch (Exception)
@@ -94,16 +132,16 @@ namespace SandBoxGiuseppe.Controllers
 
 
         [HttpDelete]
-        public IActionResult DeleteAppunto([FromQuery] string stringa)
+        public IActionResult DeleteToDo([FromQuery] string deleteWith, ToDoService toDoService)
         {
             try
             {
-                appuntiService.EliminaAppunto(stringa);
+                toDoService.EliminaToDo(deleteWith);
                 return Ok();
             }
             catch (Exception ex)
             {
-                _logger.LogError("DeleteAppunto", ex.Message);
+                _logger.LogError("DeleteToDo", ex.Message);
                 return new BadRequestResult();
             }
 

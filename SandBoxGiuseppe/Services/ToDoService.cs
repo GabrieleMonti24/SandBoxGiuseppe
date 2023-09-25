@@ -13,8 +13,8 @@ namespace SandBoxGiuseppe.Services
         int counterId;
         public void CreaToDo(ToDo toDo)
         {
-            toDo.Id = counterId;
-            counterId++;
+            int newId = ToDoStoreStatic.toDos.Count > 0 ? ToDoStoreStatic.toDos.Max(td => td.Id) + 1 : 1;
+            toDo.Id = newId;
             toDo.DataCreazione = DateTime.Now;
             toDo.Done = false;
             ToDoStoreStatic.toDos.Add(toDo);
@@ -26,7 +26,7 @@ namespace SandBoxGiuseppe.Services
             return ToDoStoreStatic.toDos;
         }
 
-        ToDo IToDoService.GetToDoById(int id)
+        public ToDo GetToDoById(int id)
         {
             var todo =  ToDoStoreStatic.toDos.FirstOrDefault(todo => todo.Id == id);
 
@@ -38,14 +38,14 @@ namespace SandBoxGiuseppe.Services
             return todo;
         }
 
-        List<ToDo> IToDoService.GetToDoByNoNCompletato()
+        public List<ToDo> GetToDoByNoNCompletato()
         {
             List<ToDo> nonCompletatiTodos = ToDoStoreStatic.toDos.Where(todo => todo.Done == false).ToList();
             return nonCompletatiTodos;
             
         }
 
-        List<ToDo> IToDoService.GetToDoByScadenza()
+        public List<ToDo> GetToDoByScadenza()
         {
             DateTime currentDate = DateTime.Now;
 
@@ -56,7 +56,7 @@ namespace SandBoxGiuseppe.Services
             return toDosScaduti;
         }
 
-        ToDo IToDoService.ModificaToDo(ToDo todo, int id)
+        public ToDo ModificaToDo(ToDo todo, int id)
         {
              todo = ToDoStoreStatic.toDos.FirstOrDefault(todo => todo.Id == id);
 
@@ -72,7 +72,7 @@ namespace SandBoxGiuseppe.Services
             ToDoStoreStatic.toDos.RemoveAll(x => x.Titolo.Contains(deleteWith));
         }
 
-        List<ToDo> IToDoService.GetToDoByCompleto()
+        public List<ToDo> GetToDoByCompleto()
         {
             List<ToDo> completatiTodos = ToDoStoreStatic.toDos.Where(todo => todo.Done == false).ToList();
             return completatiTodos;

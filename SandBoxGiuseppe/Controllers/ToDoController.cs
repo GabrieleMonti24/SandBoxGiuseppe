@@ -42,7 +42,7 @@ namespace SandBoxGiuseppe.Controllers
             try
             {
                 _logger.LogInformation("PostToDoModifica");
-                toDoService.ModificaToDo(todo);
+                toDoService.ModificaToDo(todo, id);
                 return Ok();
             }
             catch (Exception ex)
@@ -107,7 +107,9 @@ namespace SandBoxGiuseppe.Controllers
         {
             try
             {
-                return toDoService.GetToDoByCompleto();
+                List<ToDo>nonCompletati =  toDoService.GetToDoByNoNCompletato();
+
+                return (IActionResult)nonCompletati; //non ho capito
 
             }
             catch (Exception)
@@ -120,7 +122,7 @@ namespace SandBoxGiuseppe.Controllers
         {
             try
             {
-                return toDoService.GetToDoByNoNCompletato();
+                return (IActionResult)toDoService.GetToDoByNoNCompletato(); //non ho capito
 
             }
             catch (Exception)

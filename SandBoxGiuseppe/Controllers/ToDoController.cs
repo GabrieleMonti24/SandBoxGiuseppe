@@ -23,14 +23,15 @@ namespace SandBoxGiuseppe.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         /*
             Passare un todoSemplice e creare quello completo nel service (idea di far viaggiare meno informazioni possibili)
+            passo uno fatto, dopo provare a ritornare l'oggetto todo completo
          */
-        public IActionResult CreaTodo([FromBody] ToDo toDo)
+        public IActionResult CreaTodo([FromBody] ToDoSemplice toDoSemplice)
         {
             try
             {
                 _logger.LogInformation("PostToDo");
-                toDoService.CreaToDo(toDo);
-                return Created("Creato con successo!", toDo);
+                toDoService.CreaToDo(toDoSemplice);
+                return Created("Creato con successo!", toDoSemplice);
             }
             catch (Exception ex)
             {
@@ -41,12 +42,12 @@ namespace SandBoxGiuseppe.Controllers
 
         //Modificare in modo da non passare int id
         [HttpPost]
-        public IActionResult ModificaTodoById([FromBody] ToDo todo, int id)
+        public IActionResult ModificaTodoById([FromBody] ToDo todo)
         {
             try
             {
                 _logger.LogInformation("PostToDoModifica");
-                toDoService.ModificaToDo(todo, id);
+                toDoService.ModificaToDo(todo,1);
                 return Ok();
             }
             catch (Exception ex)
@@ -58,12 +59,12 @@ namespace SandBoxGiuseppe.Controllers
 
         [HttpPost]
         //Da modificare con id
-        public IActionResult CompletaTodo([FromBody] ToDo todo)
+        public IActionResult CompletaTodo([FromBody] int id)
         {
             try
             {
                 _logger.LogInformation("PostToDo");
-                toDoService.CompletaToDo(todo);
+                toDoService.CompletaToDo(id);
                 return Ok();
             }
             catch (Exception ex)
@@ -111,12 +112,12 @@ namespace SandBoxGiuseppe.Controllers
 
 
         [HttpGet]
-        //Attenzione !
+        //Attenzione ! // sostituito da non completati a completai (metodo)
         public IActionResult GetCompletati()
         {
             try
             {
-                List<ToDo> nonCompletati = toDoService.GetToDoByNoNCompletato();
+                List<ToDo> nonCompletati = toDoService.GetToDoByCompleto();
 
 
                 if (nonCompletati.Count == 0)
@@ -146,7 +147,7 @@ namespace SandBoxGiuseppe.Controllers
                     return NotFound();
                 }
 
-                return Ok(todos); //non ho capito
+                return Ok(todos); 
 
             }
             catch (Exception)
@@ -175,8 +176,24 @@ namespace SandBoxGiuseppe.Controllers
 
         }
 
-        //Delete by id
+        //Delete by id // fatto
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult DeleteToDoById([FromQuery] int id)
+        {
+            try
+            {
+                toDoService.EliminaToDoById(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("DeleteToDo", ex.Message);
+                return NotFound();
+            }
 
+
+        }
 
     }
 }

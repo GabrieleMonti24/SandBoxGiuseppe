@@ -5,7 +5,7 @@ namespace SandBoxGiuseppe.Interfaces
     public interface IToDoService
     {
 
-        void CreaToDo(ToDo todo);
+        void CreaToDo(ToDoSemplice todoSemplice);
 
         List<ToDo> GetToDo();
         //altri metodi get?
@@ -17,9 +17,9 @@ namespace SandBoxGiuseppe.Interfaces
 
         ToDo ModificaToDo(ToDo todo, int id);
 
-        ToDo CompletaToDo(ToDo todo);
+        void CompletaToDo(int id);
 
         void EliminaToDo(string deleteWith);
-
+        void EliminaToDoById(int id);
     }
 }

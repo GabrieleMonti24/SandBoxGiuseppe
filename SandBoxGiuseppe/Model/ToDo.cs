@@ -18,6 +18,7 @@
 
         //Data completamento
         public DateTime DataCompletamento { get; set; }
+        public ToDo() { }
         public ToDo(int id, string titolo, string descrizione, DateTime dataCreazione, DateTime dataScadenza, bool done, DateTime dataCompletamento)
         {
             Id = id;

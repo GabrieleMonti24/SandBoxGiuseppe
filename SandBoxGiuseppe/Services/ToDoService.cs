@@ -9,17 +9,20 @@ namespace SandBoxGiuseppe.Services
 
     public class ToDoService : IToDoService
     {
-        int counterId;
-        public void CreaToDo(ToDo toDo)
+        
+        public void CreaToDo(ToDoSemplice toDoSemplice)
         {
 
-
-
+            ToDo toDo = new ToDo();
             int newId = ToDoStoreStatic.toDos.Count > 0 ? ToDoStoreStatic.toDos.Max(td => td.Id) + 1 : 1;
             toDo.Id = newId;
+            toDo.Titolo = toDoSemplice.Titolo;
+            toDo.Descrizione = toDoSemplice.Descrizione;
+            toDo.DataScadenza = toDoSemplice.DataScadenza;
             toDo.DataCreazione = DateTime.Now;
             toDo.Done = false;
             ToDoStoreStatic.toDos.Add(toDo);
+            
         }
 
         public List<ToDo> GetToDo()
@@ -63,6 +66,7 @@ namespace SandBoxGiuseppe.Services
         {
             var originalTodo = ToDoStoreStatic.toDos.FirstOrDefault(todo => todo.Id == id);
 
+
             if (originalTodo == null)
             {
                 throw new Exception("ToDo non trovato");
@@ -80,10 +84,6 @@ namespace SandBoxGiuseppe.Services
 
             return originalTodo;
         }
-        public void EliminaToDo(string deleteWith)
-        {
-            ToDoStoreStatic.toDos.RemoveAll(x => x.Titolo.Contains(deleteWith));
-        }
 
         public List<ToDo> GetToDoByCompleto()
         {
@@ -91,16 +91,31 @@ namespace SandBoxGiuseppe.Services
             return completatiTodos;
         }
 
-        public ToDo CompletaToDo(ToDo todo)
+        public void CompletaToDo(int id)
         {
+            var todo = ToDoStoreStatic.toDos.FirstOrDefault(todo => todo.Id == id);
+            int index = ToDoStoreStatic.toDos.FindIndex(todo => todo.Id == id);
 
-            todo.Done = true;
-            todo.DataCompletamento = DateTime.Now;
-
-            return todo;
-
+            if (todo == null)
+            {
+                throw new Exception("ToDo non trovato");
+            }
+            else { 
+             
+                todo.Done = true;
+                todo.DataCompletamento = DateTime.Now;   
+                ToDoStoreStatic.toDos.RemoveAt(index);
+                ToDoStoreStatic.toDos.Add(todo);
+            }
+        }
+        public void EliminaToDo(string deleteWith)
+        {
+            ToDoStoreStatic.toDos.RemoveAll(x => x.Titolo.Contains(deleteWith));
         }
 
-
+        public void EliminaToDoById(int id)
+        {
+            ToDoStoreStatic.toDos.RemoveAll(x => x.Id == id);
+        }
     }
 }

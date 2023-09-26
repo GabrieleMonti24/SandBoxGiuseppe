@@ -1,4 +1,3 @@
-using SandBoxGiuseppe.Database;
 using SandBoxGiuseppe.Model;
 
 namespace SandBoxGiuseppe.Interfaces
@@ -7,8 +6,8 @@ namespace SandBoxGiuseppe.Interfaces
     {
 
         void CreaToDo(ToDo todo);
-        
-        List<ToDo>GetToDo();
+
+        List<ToDo> GetToDo();
         //altri metodi get?
         ToDo GetToDoById(int id);
         List<ToDo> GetToDoByCompleto();

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using SandBoxGiuseppe.Database;
 using SandBoxGiuseppe.Interfaces;
 using SandBoxGiuseppe.Model;
@@ -13,6 +12,9 @@ namespace SandBoxGiuseppe.Services
         int counterId;
         public void CreaToDo(ToDo toDo)
         {
+
+
+
             int newId = ToDoStoreStatic.toDos.Count > 0 ? ToDoStoreStatic.toDos.Max(td => td.Id) + 1 : 1;
             toDo.Id = newId;
             toDo.DataCreazione = DateTime.Now;
@@ -20,7 +22,7 @@ namespace SandBoxGiuseppe.Services
             ToDoStoreStatic.toDos.Add(toDo);
         }
 
-        List<ToDo> IToDoService.GetToDo()
+        public List<ToDo> GetToDo()
         {
 
             return ToDoStoreStatic.toDos;
@@ -28,12 +30,13 @@ namespace SandBoxGiuseppe.Services
 
         public ToDo GetToDoById(int id)
         {
-            var todo =  ToDoStoreStatic.toDos.FirstOrDefault(todo => todo.Id == id);
+            var todo = ToDoStoreStatic.toDos.FirstOrDefault(todo => todo.Id == id);
 
-            if (todo == null) {
+            if (todo == null)
+            {
 
-              return null;
-            
+                return null;
+
             }
             return todo;
         }
@@ -42,7 +45,7 @@ namespace SandBoxGiuseppe.Services
         {
             List<ToDo> nonCompletatiTodos = ToDoStoreStatic.toDos.Where(todo => todo.Done == false).ToList();
             return nonCompletatiTodos;
-            
+
         }
 
         public List<ToDo> GetToDoByScadenza()
@@ -56,18 +59,28 @@ namespace SandBoxGiuseppe.Services
             return toDosScaduti;
         }
 
-        public ToDo ModificaToDo(ToDo todo, int id)
+        public ToDo ModificaToDo(ToDo todoToEdit, int id)
         {
-             todo = ToDoStoreStatic.toDos.FirstOrDefault(todo => todo.Id == id);
+            var originalTodo = ToDoStoreStatic.toDos.FirstOrDefault(todo => todo.Id == id);
 
-            string titolo = todo.Titolo;
-            string descrizione = todo.Descrizione;
-            DateTime dataScadenza = todo.DataScadenza;
+            if (originalTodo == null)
+            {
+                throw new Exception("ToDo non trovato");
+            }
 
-            ToDo newTodo = new ToDo(todo.Id,titolo,descrizione,todo.DataCreazione,dataScadenza,todo.Done,todo.DataCompletamento);
-            return newTodo;
+            originalTodo.Titolo = todoToEdit.Titolo;
+            originalTodo.Descrizione = todoToEdit.Descrizione;
+            originalTodo.DataScadenza = todoToEdit.DataScadenza;
+
+            int ToRemove = ToDoStoreStatic.toDos.FindIndex(todo => todo.Id == id);
+            ToDoStoreStatic.toDos.RemoveAt(ToRemove);
+
+            ToDoStoreStatic.toDos.Add(originalTodo);
+
+
+            return originalTodo;
         }
-         public void EliminaToDo(string deleteWith)
+        public void EliminaToDo(string deleteWith)
         {
             ToDoStoreStatic.toDos.RemoveAll(x => x.Titolo.Contains(deleteWith));
         }
@@ -78,15 +91,16 @@ namespace SandBoxGiuseppe.Services
             return completatiTodos;
         }
 
-        ToDo IToDoService.CompletaToDo(ToDo todo) {
+        public ToDo CompletaToDo(ToDo todo)
+        {
 
             todo.Done = true;
             todo.DataCompletamento = DateTime.Now;
 
             return todo;
-        
+
         }
 
-        
-        }
-    }  
+
+    }
+}

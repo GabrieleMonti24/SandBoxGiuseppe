@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using SandBoxGiuseppe.Database;
 using SandBoxGiuseppe.Interfaces;
 using SandBoxGiuseppe.Model;
-using SandBoxGiuseppe.Services;
 
 namespace SandBoxGiuseppe.Controllers
 {
@@ -14,22 +12,25 @@ namespace SandBoxGiuseppe.Controllers
         private readonly ILogger<ToDoController> _logger;
         private readonly IToDoService toDoService;
 
-        public ToDoController(ILogger<ToDoController> logger, ToDoService toDoService)
+        public ToDoController(ILogger<ToDoController> logger, IToDoService toDoService)
         {
             _logger = logger;
             this.toDoService = toDoService;
         }
 
-        
+
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public IActionResult CreaTodo([FromBody] ToDo toDo) 
+        /*
+            Passare un todoSemplice e creare quello completo nel service (idea di far viaggiare meno informazioni possibili)
+         */
+        public IActionResult CreaTodo([FromBody] ToDo toDo)
         {
             try
             {
                 _logger.LogInformation("PostToDo");
                 toDoService.CreaToDo(toDo);
-                return Created("Creato con successo!",toDo);
+                return Created("Creato con successo!", toDo);
             }
             catch (Exception ex)
             {
@@ -37,6 +38,8 @@ namespace SandBoxGiuseppe.Controllers
                 return new BadRequestResult();
             }
         }
+
+        //Modificare in modo da non passare int id
         [HttpPost]
         public IActionResult ModificaTodoById([FromBody] ToDo todo, int id)
         {
@@ -49,10 +52,12 @@ namespace SandBoxGiuseppe.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("PostToDoModifica", ex.Message);
-                return new BadRequestResult();
+                return NotFound();
             }
         }
+
         [HttpPost]
+        //Da modificare con id
         public IActionResult CompletaTodo([FromBody] ToDo todo)
         {
             try
@@ -70,13 +75,13 @@ namespace SandBoxGiuseppe.Controllers
 
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetAll(IToDoService service)
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetAll()
         {
             try
             {
                 _logger.LogInformation("GetTodo");
-                return Ok(service.GetToDo());
+                return Ok(toDoService.GetToDo());
             }
             catch (Exception ex)
             {
@@ -85,15 +90,15 @@ namespace SandBoxGiuseppe.Controllers
             }
         }
 
-        
+
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetToDo([FromQuery]int id)
+        public IActionResult GetToDo([FromQuery] int id)
         {
             try
             {
                 _logger.LogInformation("GetToDo");
-                
+
                 return Ok(toDoService.GetToDoById(id));
 
             }
@@ -104,16 +109,22 @@ namespace SandBoxGiuseppe.Controllers
             }
         }
 
-        
+
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        //Attenzione !
         public IActionResult GetCompletati()
         {
             try
             {
-                List<ToDo>nonCompletati =  toDoService.GetToDoByNoNCompletato();
+                List<ToDo> nonCompletati = toDoService.GetToDoByNoNCompletato();
 
-                return (IActionResult)nonCompletati; //non ho capito
+
+                if (nonCompletati.Count == 0)
+                {
+                    return NotFound();
+                }
+
+                return Ok(nonCompletati);
 
             }
             catch (Exception)
@@ -128,7 +139,14 @@ namespace SandBoxGiuseppe.Controllers
         {
             try
             {
-                return (IActionResult)toDoService.GetToDoByNoNCompletato(); //non ho capito
+                var todos = toDoService.GetToDoByNoNCompletato();
+
+                if (todos.Count == 0)
+                {
+                    return NotFound();
+                }
+
+                return Ok(todos); //non ho capito
 
             }
             catch (Exception)
@@ -141,7 +159,7 @@ namespace SandBoxGiuseppe.Controllers
 
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DeleteToDo([FromQuery] string deleteWith, ToDoService toDoService)
+        public IActionResult DeleteToDo([FromQuery] string deleteWith)
         {
             try
             {
@@ -156,6 +174,8 @@ namespace SandBoxGiuseppe.Controllers
 
 
         }
+
+        //Delete by id
 
 
     }

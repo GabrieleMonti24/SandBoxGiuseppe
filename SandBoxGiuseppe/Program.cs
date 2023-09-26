@@ -2,11 +2,12 @@ using SandBoxGiuseppe.Interfaces;
 using SandBoxGiuseppe.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
 
 // Add services to the container.
 builder.Services.AddTransient<IAppuntiService, AppuntiService>();
+builder.Services.AddTransient<IToDoService, ToDoService>();
 
-builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
